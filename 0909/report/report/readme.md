@@ -1,4 +1,3 @@
-[report2.html](https://github.com/user-attachments/files/32161891/report2.html)
 
 <!DOCTYPE html>
 <html lang="ko">
