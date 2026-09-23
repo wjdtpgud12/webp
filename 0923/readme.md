@@ -99,3 +99,47 @@ color : darkred;
     . 김치 찌개와 치킨을 무척 좋아합니다.</p>
 </body>
 </html>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>&lt;style&gt; 속성에 스타일 만들기</title>
+<style>
+p { color : red; font-size : 15px; } /* 모든 p 태그에 적용 */
+</style>
+</head>
+<body>
+<h3>손 홍 민</h3>
+<hr>
+<p>오페라를 좋아하고</p>
+<p>엘비스 프레슬리를 좋아하고</p>
+<p style="color:blue">김치부침개를 좋아하고</p>
+<p style="color:magenta; font-size:30px">축구를
+좋아합니다.</p>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>&lt;link&gt; 태그로 스타일 파일 불러오기</title>
+<link type="text/css" rel="stylesheet" href="mystyle.css">
+</head>
+<body>
+<h3>소연재</h3>
+<hr>
+<p>저는 체조 선수 소연재입니다. 음악을 들으면서 책읽기를 좋아
+합니다. 김치 찌개와 막국수 무척 좋아합니다.</p>
+</body>
+</html>
+
+mystyle.css
+/* mystyle.css */
+body { background-color : linen; color : blueviolet;
+margin-left : 30px; margin-right : 30px; }
+h3 { text-align : center; color : darkred; }
+
+
+
