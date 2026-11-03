@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>겜블링 게임</title>
+    <style>
+        #num{
+            border: 1px solid violet;
+            font-size: 70px;
+            color: blue;
+            background-color: ivory;
+            width: 200px;
+            font-style: italic;
+        }
+        #result{
+            color: violet;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h3>겜블링 게임</h3>
+    <p>각 숫자를 클릭하면 0에서 2사이의 난수로 바뀝니다. 모두 같은 수가 나오면 승리합니다.</p>
+    <hr>
+    <div id="num">
+        <span id="first" onclick="roll(this)">0</span>
+        <span id="second" onclick="roll(this)">0</span>
+        <span id="third" onclick="roll(this)">0</span>
+    </div>
+    <div id="result" onclick="restart()"></div>
+
+    <script>
+        let num1=0
+        let num2=0
+        let num3=0
+
+        function roll(obj){
+            if(obj==document.getElementById("first")){
+                let first = document.getElementById("first")
+                num1 = Math.floor(Math.random()*3)
+                first.innerHTML = num1
+            }
+            else if(obj==document.getElementById("second")){
+                let second = document.getElementById("second")
+                num2 = Math.floor(Math.random()*3)
+                second.innerHTML=num2
+            }
+            else if(obj==document.getElementById("third")){
+                let third = document.getElementById("third")
+                num3 = Math.floor(Math.random()*3)
+                third.innerText = num3
+            }
+
+            let result = document.getElementById("result")
+
+            if(num1==num2 && num2==num3){
+                result.innerHTML = "Success(click here to do again)"
+            }
+            else{
+                result.innerHTML = "fail(click here to do again)"
+            }
+        }
+
+        function restart(){
+            num1=0
+            num2=0
+            num3=0
+
+            document.getElementById("first").innerHTML=0
+            document.getElementById("second").innerHTML=0
+            document.getElementById("third").innerHTML=0
+
+        }
+    </script>
+</body>
+</html>
