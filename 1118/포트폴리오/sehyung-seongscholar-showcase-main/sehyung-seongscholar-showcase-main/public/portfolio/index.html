@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio | 소프트웨어 개발자를 꿈꾸는 대학생</title>
+  <meta name="description" content="소프트웨어 개발자를 꿈꾸는 대학생의 개인 포트폴리오입니다." />
+
+  <!-- 웹 폰트: 한글은 Pretendard, 코드 느낌의 포인트 글씨는 JetBrains Mono -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" />
+
+  <!-- 기술 스택 아이콘 (Devicon: 아이콘 글꼴만 불러오는 가벼운 CSS) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/devicon.min.css" />
+
+  <!-- 직접 작성한 스타일 -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- =========================================================
+       1. 상단 고정 네비게이션 바
+       ========================================================= -->
+  <header class="navbar" id="navbar">
+    <div class="container navbar__inner">
+      <!-- 로고: 이름은 js/data.js 의 profile.name 에서 자동으로 채워집니다 -->
+      <a href="#home" class="navbar__logo">
+        <span class="mono accent">&lt;</span><span data-profile="name">이름</span><span class="mono accent">/&gt;</span>
+      </a>
+
+      <!-- PC 메뉴 / 모바일에서는 햄버거 버튼으로 열리는 메뉴 -->
+      <nav class="navbar__menu" id="navMenu" aria-label="주요 메뉴">
+        <a href="#home" class="navbar__link">Home</a>
+        <a href="#about" class="navbar__link">About</a>
+        <a href="#skills" class="navbar__link">Skills</a>
+        <a href="#education" class="navbar__link">Education</a>
+        <a href="#contact" class="navbar__link">Contact</a>
+      </nav>
+
+      <!-- 햄버거 버튼 (모바일 전용) -->
+      <button class="navbar__toggle" id="navToggle" aria-label="메뉴 열기" aria-expanded="false" aria-controls="navMenu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- =========================================================
+         2. 메인 화면 (Home / Hero)
+         ========================================================= -->
+    <section class="hero" id="home">
+      <!-- 배경 장식: 은은하게 움직이는 그라데이션 빛 + 격자 무늬 -->
+      <div class="hero__bg" aria-hidden="true">
+        <div class="hero__glow hero__glow--1"></div>
+        <div class="hero__glow hero__glow--2"></div>
+        <div class="hero__glow hero__glow--3"></div>
+        <div class="hero__grid"></div>
+      </div>
+
+      <div class="container hero__content">
+        <p class="hero__eyebrow reveal">
+          <span class="status-dot"></span>
+          <span class="mono">Software Developer in Progress</span>
+        </p>
+
+        <h1 class="hero__title reveal">
+          안녕하세요,<br />
+          <span class="gradient-text">소프트웨어 개발자</span>를 꿈꾸는<br class="br-mobile" /> 대학생입니다.
+        </h1>
+
+        <p class="hero__intro reveal">
+          저는 <strong data-profile="name">이름</strong>입니다.
+          <span data-profile="tagline">소개 문구</span>
+        </p>
+
+        <!-- 관심 분야가 한 글자씩 타이핑되는 효과 (목록은 data.js 의 profile.interests) -->
+        <p class="hero__typing reveal mono" aria-live="polite">
+          <span class="muted">interests =</span>
+          <span class="accent">"</span><span id="typingText"></span><span class="typing-cursor">|</span><span class="accent">"</span>
+        </p>
+
+        <div class="hero__buttons reveal">
+          <a href="#about" class="btn btn--primary ripple">About Me</a>
+          <a href="#contact" class="btn btn--ghost ripple">Contact Me</a>
+        </div>
+      </div>
+
+      <!-- 아래로 스크롤 안내 -->
+      <a href="#about" class="hero__scroll" aria-label="아래로 스크롤">
+        <span class="mono">scroll</span>
+        <span class="hero__scroll-line"></span>
+      </a>
+    </section>
+
+    <!-- =========================================================
+         3. 자기소개 (About Me)
+         ========================================================= -->
+    <section class="section" id="about">
+      <div class="container">
+        <div class="section__head reveal">
+          <span class="section__index mono">01</span>
+          <h2 class="section__title">About Me</h2>
+          <p class="section__desc">저를 소개합니다.</p>
+        </div>
+
+        <div class="about">
+          <!-- 프로필 이미지 영역
+               ✏️ 사진을 넣으려면 images 폴더에 사진을 넣고
+               js/data.js 의 profile.image 에 "images/파일이름.jpg" 를 적어주세요. -->
+          <div class="about__photo reveal">
+            <div class="about__photo-frame" id="profilePhoto">
+              <span class="about__photo-initial" data-profile="initial">?</span>
+              <span class="about__photo-hint mono">your photo here</span>
+            </div>
+            <div class="about__photo-badge mono">
+              <span class="status-dot"></span> <span data-profile="status">재학 중</span>
+            </div>
+          </div>
+
+          <div class="about__text reveal">
+            <h3 class="about__name">
+              <span data-profile="name">이름</span>
+              <small class="mono muted" data-profile="nameEn">Name</small>
+            </h3>
+
+            <!-- 기본 정보 (data.js 의 profile 에서 채워짐) -->
+            <ul class="about__info">
+              <li><span class="about__label">학교</span><span data-profile="university">대학교</span></li>
+              <li><span class="about__label">전공</span><span data-profile="major">전공</span></li>
+              <li><span class="about__label">학번</span><span data-profile="admission">학번</span></li>
+              <li><span class="about__label">학년</span><span data-profile="grade">학년</span></li>
+              <li><span class="about__label">상태</span><span data-profile="status">재학 중</span></li>
+            </ul>
+
+            <p class="about__bio" data-profile="bio">자기소개</p>
+
+            <!-- 관심 분야 태그 -->
+            <div class="about__block">
+              <h4 class="about__subtitle">관심 분야</h4>
+              <div class="tag-list" id="interestTags"></div>
+            </div>
+
+            <!-- 목표와 포부 -->
+            <div class="about__block">
+              <h4 class="about__subtitle">목표와 포부</h4>
+              <blockquote class="about__goal" data-profile="goal">목표</blockquote>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         4. 기술 스택 (Skills) — 카드는 js/data.js 의 skills 로 자동 생성
+         ========================================================= -->
+    <section class="section section--alt" id="skills">
+      <div class="container">
+        <div class="section__head reveal">
+          <span class="section__index mono">02</span>
+          <h2 class="section__title">Skills</h2>
+          <p class="section__desc">지금까지 배우고 사용해 본 기술입니다.</p>
+        </div>
+
+        <!-- 숙련도 범례 -->
+        <div class="skill-legend reveal">
+          <span><i class="legend-dot legend-dot--1"></i>초급 · 기초 문법 학습</span>
+          <span><i class="legend-dot legend-dot--2"></i>초중급 · 간단한 과제 구현</span>
+          <span><i class="legend-dot legend-dot--3"></i>중급 · 프로젝트에 활용</span>
+        </div>
+
+        <div class="skills-grid" id="skillsGrid"></div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         5. 학력 및 활동 (Education & Activities) — 타임라인
+         ========================================================= -->
+    <section class="section section--alt" id="education">
+      <div class="container">
+        <div class="section__head reveal">
+          <span class="section__index mono">03</span>
+          <h2 class="section__title">Education &amp; Activities</h2>
+          <p class="section__desc">배워 온 과정과 앞으로의 계획입니다.</p>
+        </div>
+
+        <ol class="timeline" id="timeline"></ol>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         6. 연락처 (Contact)
+         ========================================================= -->
+    <section class="section" id="contact">
+      <div class="container">
+        <div class="section__head reveal">
+          <span class="section__index mono">04</span>
+          <h2 class="section__title">Contact</h2>
+          <p class="section__desc">함께 이야기 나누고 싶다면 언제든 연락 주세요.</p>
+        </div>
+
+        <div class="contact">
+          <!-- 연락처 카드 목록 (data.js 의 contacts 로 자동 생성) -->
+          <div class="contact__list" id="contactList"></div>
+
+          <!-- 문의하기 폼: 보내기를 누르면 메일 앱이 열리며 내용이 자동으로 채워집니다 -->
+          <form class="contact__form reveal" id="contactForm" novalidate>
+            <h3 class="contact__form-title">문의하기</h3>
+            <p class="muted small">메시지를 남겨 주시면 메일 앱으로 바로 연결됩니다.</p>
+
+            <label class="field">
+              <span>이름</span>
+              <input type="text" name="name" placeholder="홍길동" required />
+            </label>
+            <label class="field">
+              <span>이메일</span>
+              <input type="email" name="email" placeholder="you@example.com" required />
+            </label>
+            <label class="field">
+              <span>메시지</span>
+              <textarea name="message" rows="5" placeholder="전하고 싶은 내용을 적어 주세요." required></textarea>
+            </label>
+            <p class="form-error" id="formError" role="alert"></p>
+
+            <button type="submit" class="btn btn--primary btn--block ripple">문의 보내기</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================================================
+       푸터
+       ========================================================= -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p class="mono small">© <span id="year"></span> <span data-profile="nameEn">Name</span>. Built with HTML · CSS · JavaScript.</p>
+      <a href="#home" class="footer__top mono small">Back to top ↑</a>
+    </div>
+  </footer>
+
+  <!-- 맨 위로 이동 버튼 -->
+  <button class="to-top ripple" id="toTop" aria-label="맨 위로 이동">↑</button>
+
+  <!-- 알림 메시지 (토스트) -->
+  <div class="toast" id="toast" role="status"></div>
+
+  <!-- 스크립트: data.js(내용) → main.js(동작) 순서로 불러옵니다 -->
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
