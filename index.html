@@ -136,6 +136,26 @@ footer{max-width:1160px;margin:auto;padding:24px 22px 40px;border-top:1px solid 
  footer{padding:20px 16px 30px;flex-direction:column}
 }
 @media(max-width:390px){.nav button{font-size:11px;padding:8px 6px}.brand{font-size:14px}.brandmark{width:28px;height:28px}}
+
+.auth-backdrop{position:fixed;inset:0;background:rgba(20,36,27,.48);display:none;align-items:center;justify-content:center;padding:18px;z-index:20}
+.auth-backdrop.open{display:flex}
+.auth-modal{width:min(440px,100%);background:white;border-radius:24px;padding:27px;box-shadow:0 24px 80px rgba(13,32,20,.25);position:relative;animation:fade .2s ease}
+.auth-close{position:absolute;right:17px;top:15px;border:0;background:#f1f4f1;border-radius:50%;width:34px;height:34px;font-size:20px;color:#617067}
+.auth-modal h2{font-size:27px;letter-spacing:-.8px;margin:4px 0 6px}
+.auth-modal .auth-desc{color:var(--muted);font-size:14px;margin:0 0 19px}
+.auth-tabs{display:flex;background:#f2f5f1;padding:4px;border-radius:13px;margin:18px 0}
+.auth-tabs button{flex:1;border:0;background:transparent;border-radius:10px;padding:10px;font-weight:800;color:#64736a}
+.auth-tabs button.active{background:white;color:var(--green);box-shadow:0 2px 8px rgba(23,52,34,.08)}
+.auth-field{display:block;font-size:13px;font-weight:750;margin:13px 0 6px}
+.auth-input{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 13px;outline:none}
+.auth-input:focus{border-color:#88ae96;box-shadow:0 0 0 3px rgba(47,118,85,.08)}
+.auth-submit{width:100%;margin-top:19px}
+.auth-error{color:#b94332;font-size:13px;min-height:18px;margin:10px 0 -7px}
+.auth-footnote{background:#f5f7f2;border-radius:12px;padding:11px 12px;font-size:11px;line-height:1.55;color:#68766d;margin-top:14px}
+.user-menu{display:flex;align-items:center;gap:8px}
+.user-chip{background:#e8f1e8;border-radius:20px;padding:7px 11px;color:var(--green);font-size:12px;font-weight:800;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#authButton.logged-in{background:#edf2ec;color:#46574d}
+
 </style>
 </head>
 <body>
@@ -145,6 +165,7 @@ footer{max-width:1160px;margin:auto;padding:24px 22px 40px;border-top:1px solid 
     <button onclick="showView('home')">서비스 소개</button>
     <button onclick="showView('dashboard')">내 대시보드</button>
     <button class="nav-cta" onclick="showView('onboard')">그룹 찾기</button>
+    <button id="authButton" onclick="openAuth('login')">로그인</button>
   </nav>
 </header>
 <main>
@@ -298,6 +319,33 @@ footer{max-width:1160px;margin:auto;padding:24px 22px 40px;border-top:1px solid 
   </section>
 </main>
 <footer><span>운동 다시 하자고 · 작게 시작해도 괜찮아요.</span><span>데모 프로토타입 · 입력한 정보는 이 브라우저에 저장됩니다.</span></footer>
+
+<div class="auth-backdrop" id="authBackdrop" onclick="if(event.target===this)closeAuth()">
+  <section class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <button class="auth-close" aria-label="닫기" onclick="closeAuth()">×</button>
+    <div class="eyebrow"><span class="dot"></span> 내 운동 약속 저장하기</div>
+    <h2 id="authTitle">다시 시작할 준비됐나요?</h2>
+    <p class="auth-desc">가입하면 내 목표와 체크인을 이 브라우저에 저장할 수 있어요.</p>
+    <div class="auth-tabs">
+      <button id="loginTab" class="active" onclick="setAuthMode('login')">로그인</button>
+      <button id="signupTab" onclick="setAuthMode('signup')">회원가입</button>
+    </div>
+    <form id="authForm" onsubmit="submitAuth(event)">
+      <div id="nicknameField" style="display:none">
+        <label class="auth-field" for="authNickname">닉네임</label>
+        <input class="auth-input" id="authNickname" maxlength="20" placeholder="예: 다시가는민지">
+      </div>
+      <label class="auth-field" for="authEmail">이메일</label>
+      <input class="auth-input" id="authEmail" type="email" autocomplete="email" required placeholder="name@example.com">
+      <label class="auth-field" for="authPassword">비밀번호</label>
+      <input class="auth-input" id="authPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="6자 이상">
+      <div class="auth-error" id="authError" role="alert"></div>
+      <button class="primary auth-submit" id="authSubmit" type="submit">로그인</button>
+    </form>
+    <div class="auth-footnote">현재는 체험용 프로토타입이라 계정 정보가 이 브라우저에만 저장돼요. 실제 서비스 공개 전에는 안전한 서버 기반 회원 인증으로 교체해야 합니다. 실제 사용하는 비밀번호는 입력하지 마세요.</div>
+  </section>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -349,7 +397,68 @@ function nextStep(){
  if(step===2&&form.days.length===0){toast('가능한 요일을 하나 이상 골라주세요.');return}
  if(step===3){
   if(!form.goal){toast('주간 목표를 선택해주세요.');return}
-  state.profile={...form,days:[...form.days]};save();step=0;updateForm();render();showView('dashboard');toast('잘 맞는 그룹을 준비했어요!');return;
+  state.profile={...form,days:[...form.days]};save();step=0;
+const ACCOUNT_KEY='undong-dasi-demo-accounts';
+let authMode='login';
+function getAccounts(){try{return JSON.parse(localStorage.getItem(ACCOUNT_KEY)||'{}')}catch(e){return {}}}
+async function passwordDigest(password){
+  if(!window.crypto||!crypto.subtle) throw new Error('이 브라우저에서는 체험용 로그인을 사용할 수 없어요. 최신 Chrome이나 Edge에서 다시 열어주세요.');
+  const bytes=new TextEncoder().encode(password);
+  const digest=await crypto.subtle.digest('SHA-256',bytes);
+  return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function openAuth(mode='login'){
+  if(state.account){toast(state.account.nickname+'님, 이미 로그인되어 있어요.');return}
+  setAuthMode(mode);document.getElementById('authBackdrop').classList.add('open');
+  setTimeout(()=>document.getElementById('authEmail').focus(),50);
+}
+function closeAuth(){document.getElementById('authBackdrop').classList.remove('open')}
+function setAuthMode(mode){
+  authMode=mode;
+  document.getElementById('loginTab').classList.toggle('active',mode==='login');
+  document.getElementById('signupTab').classList.toggle('active',mode==='signup');
+  document.getElementById('nicknameField').style.display=mode==='signup'?'block':'none';
+  document.getElementById('authTitle').textContent=mode==='signup'?'함께 다시 시작해요':'다시 만나서 반가워요';
+  document.getElementById('authSubmit').textContent=mode==='signup'?'회원가입하고 시작':'로그인';
+  document.getElementById('authPassword').autocomplete=mode==='signup'?'new-password':'current-password';
+  document.getElementById('authError').textContent='';
+}
+async function submitAuth(event){
+  event.preventDefault();
+  const error=document.getElementById('authError'), email=document.getElementById('authEmail').value.trim().toLowerCase();
+  const password=document.getElementById('authPassword').value;
+  const nickname=document.getElementById('authNickname').value.trim();
+  error.textContent='';
+  try{
+    const accounts=getAccounts();
+    const digest=await passwordDigest(password);
+    if(authMode==='signup'){
+      if(!nickname){error.textContent='닉네임을 입력해주세요.';return}
+      if(accounts[email]){error.textContent='이미 가입된 이메일이에요. 로그인해 주세요.';return}
+      accounts[email]={nickname,passwordDigest:digest};
+      localStorage.setItem(ACCOUNT_KEY,JSON.stringify(accounts));
+      state.account={email,nickname};
+      state.profile.nickname=nickname;
+      save();closeAuth();render();updateAuthButton();toast(nickname+'님, 가입을 환영해요!');
+    }else{
+      if(!accounts[email]||accounts[email].passwordDigest!==digest){error.textContent='이메일 또는 비밀번호를 확인해주세요.';return}
+      state.account={email,nickname:accounts[email].nickname};
+      state.profile.nickname=accounts[email].nickname;
+      save();closeAuth();render();updateAuthButton();toast('로그인했어요. 오늘도 천천히 시작해봐요!');
+    }
+  }catch(err){error.textContent=err.message||'로그인 중 문제가 생겼어요.'}
+}
+function updateAuthButton(){
+  const button=document.getElementById('authButton');
+  if(!button)return;
+  if(state.account){button.textContent='로그아웃';button.classList.add('logged-in');button.onclick=logout}
+  else{button.textContent='로그인';button.classList.remove('logged-in');button.onclick=()=>openAuth('login')}
+}
+function logout(){
+  state.account=null;save();updateAuthButton();render();toast('로그아웃했어요.');
+}
+
+updateForm();render();updateAuthButton();showView('dashboard');toast('잘 맞는 그룹을 준비했어요!');return;
  }
  step++;updateForm()
 }
@@ -394,14 +503,75 @@ function render(){
  document.getElementById('checkinCount').textContent=count;document.getElementById('goalCount').textContent=goal;
  document.getElementById('goalBar').style.width=Math.min(100,count/goal*100)+'%';
  document.getElementById('dashTime').textContent=(state.profile.time||'저녁')+' 그룹';
- document.getElementById('helloName').textContent='운동 메이트';
+ document.getElementById('helloName').textContent=(state.account&&state.account.nickname)||state.profile.nickname||'운동 메이트';
  document.getElementById('groupSize').textContent='4';
  document.getElementById('memberList').innerHTML=memberHTML();
  document.getElementById('memberList2').innerHTML=memberHTML();
  document.getElementById('feed').innerHTML=feedHTML();document.getElementById('feed2').innerHTML=feedHTML();
  renderWeek();
 }
-updateForm();render();
+
+const ACCOUNT_KEY='undong-dasi-demo-accounts';
+let authMode='login';
+function getAccounts(){try{return JSON.parse(localStorage.getItem(ACCOUNT_KEY)||'{}')}catch(e){return {}}}
+async function passwordDigest(password){
+  if(!window.crypto||!crypto.subtle) throw new Error('이 브라우저에서는 체험용 로그인을 사용할 수 없어요. 최신 Chrome이나 Edge에서 다시 열어주세요.');
+  const bytes=new TextEncoder().encode(password);
+  const digest=await crypto.subtle.digest('SHA-256',bytes);
+  return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function openAuth(mode='login'){
+  if(state.account){toast(state.account.nickname+'님, 이미 로그인되어 있어요.');return}
+  setAuthMode(mode);document.getElementById('authBackdrop').classList.add('open');
+  setTimeout(()=>document.getElementById('authEmail').focus(),50);
+}
+function closeAuth(){document.getElementById('authBackdrop').classList.remove('open')}
+function setAuthMode(mode){
+  authMode=mode;
+  document.getElementById('loginTab').classList.toggle('active',mode==='login');
+  document.getElementById('signupTab').classList.toggle('active',mode==='signup');
+  document.getElementById('nicknameField').style.display=mode==='signup'?'block':'none';
+  document.getElementById('authTitle').textContent=mode==='signup'?'함께 다시 시작해요':'다시 만나서 반가워요';
+  document.getElementById('authSubmit').textContent=mode==='signup'?'회원가입하고 시작':'로그인';
+  document.getElementById('authPassword').autocomplete=mode==='signup'?'new-password':'current-password';
+  document.getElementById('authError').textContent='';
+}
+async function submitAuth(event){
+  event.preventDefault();
+  const error=document.getElementById('authError'), email=document.getElementById('authEmail').value.trim().toLowerCase();
+  const password=document.getElementById('authPassword').value;
+  const nickname=document.getElementById('authNickname').value.trim();
+  error.textContent='';
+  try{
+    const accounts=getAccounts();
+    const digest=await passwordDigest(password);
+    if(authMode==='signup'){
+      if(!nickname){error.textContent='닉네임을 입력해주세요.';return}
+      if(accounts[email]){error.textContent='이미 가입된 이메일이에요. 로그인해 주세요.';return}
+      accounts[email]={nickname,passwordDigest:digest};
+      localStorage.setItem(ACCOUNT_KEY,JSON.stringify(accounts));
+      state.account={email,nickname};
+      state.profile.nickname=nickname;
+      save();closeAuth();render();updateAuthButton();toast(nickname+'님, 가입을 환영해요!');
+    }else{
+      if(!accounts[email]||accounts[email].passwordDigest!==digest){error.textContent='이메일 또는 비밀번호를 확인해주세요.';return}
+      state.account={email,nickname:accounts[email].nickname};
+      state.profile.nickname=accounts[email].nickname;
+      save();closeAuth();render();updateAuthButton();toast('로그인했어요. 오늘도 천천히 시작해봐요!');
+    }
+  }catch(err){error.textContent=err.message||'로그인 중 문제가 생겼어요.'}
+}
+function updateAuthButton(){
+  const button=document.getElementById('authButton');
+  if(!button)return;
+  if(state.account){button.textContent='로그아웃';button.classList.add('logged-in');button.onclick=logout}
+  else{button.textContent='로그인';button.classList.remove('logged-in');button.onclick=()=>openAuth('login')}
+}
+function logout(){
+  state.account=null;save();updateAuthButton();render();toast('로그아웃했어요.');
+}
+
+updateForm();render();updateAuthButton();
 </script>
 </body>
 </html>
